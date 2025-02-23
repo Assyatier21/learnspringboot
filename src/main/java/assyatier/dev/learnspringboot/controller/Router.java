@@ -4,26 +4,25 @@ import assyatier.dev.learnspringboot.dto.ApiResponse;
 import assyatier.dev.learnspringboot.dto.ArticleRequest;
 import assyatier.dev.learnspringboot.models.Article;
 import assyatier.dev.learnspringboot.service.ArticleService;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/v1/articles")
 class ArticleController {
     private final ArticleService articleService;
 
-    public ArticleController(ArticleService articleService) {
-        this.articleService = articleService;
-    }
-
     // Get all articles
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Article>>> getAllArticles() {
-        List<Article> articleList = articleService.getAllArticles();
+    public ResponseEntity<ApiResponse<List<Article>>> getAllArticles(
+            @RequestParam(required = false) String title){
+        List<Article> articleList = articleService.getAllArticles(title);
         ApiResponse<List<Article>> response = new ApiResponse<>(true, "Successfully fetched list of articles", articleList);
         return ResponseEntity.ok(response);  // 200 OK
     }
@@ -39,15 +38,15 @@ class ArticleController {
 
     // Create a new article
     @PostMapping
-    public ResponseEntity<ApiResponse<Article>> createArticle(@RequestBody ArticleRequest article) {
+    public ResponseEntity<ApiResponse<Article>> createArticle(@Valid @RequestBody ArticleRequest article) {
         Article createdArticle = articleService.createArticle(article);
         ApiResponse<Article> response = new ApiResponse<>(true, "Article created successfully", createdArticle);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);  // 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // Update an existing article
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Article>> updateArticle(@PathVariable Integer id, @RequestBody Article article) {
+    public ResponseEntity<ApiResponse<Article>> updateArticle(@PathVariable Integer id, @Valid @RequestBody Article article) throws Exception {
         Optional<Article> updatedArticle = articleService.updateArticle(article, id);
         ApiResponse<Article> response = updatedArticle.map(a -> new ApiResponse<>(true, "Article updated successfully", a))
                 .orElseGet(() -> new ApiResponse<>(false, "Article not found", null));
