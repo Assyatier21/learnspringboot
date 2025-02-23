@@ -22,6 +22,6 @@ public class DataSourceConfig {
 
     @Bean
     public JdbcClient jdbcClient(DataSource dataSource) {
-        return JdbcClient.create(dataSource);  // Use JdbcClient with the configured DataSource
+        return JdbcClient.create(dataSource);
     }
 }

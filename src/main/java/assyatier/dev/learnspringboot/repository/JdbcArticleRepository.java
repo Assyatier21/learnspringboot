@@ -15,12 +15,11 @@ public interface JdbcArticleRepository extends JpaRepository<Article, Long> {
 
     List<Article> findAllByTitleAndDeletedAtIsNull(String title);
 
-    List<Article> findAllByDeletedAtIsNullAndOrderByUpdatedAtDesc();
+    List<Article> findAllByDeletedAtIsNullOrderByUpdatedAtDesc();
 
-    List<Article> findByTitleAndDeletedAtIsNull();
+    Optional<Article> findByIdAndDeletedAtIsNull(Long id);
 
-    Optional<Article> findByIdAndDeletedAtIsNull(Integer id);
-
-    @Query("SELECT COUNT(*) FROM articles WHERE deleted_at IS NULL")
+    @Query("SELECT COUNT(a) FROM Article a WHERE a.deletedAt IS NULL")
     Integer countAllArticles();
 }
+

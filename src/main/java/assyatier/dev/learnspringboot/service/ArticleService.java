@@ -3,6 +3,7 @@ package assyatier.dev.learnspringboot.service;
 import assyatier.dev.learnspringboot.dto.ArticleRequest;
 import assyatier.dev.learnspringboot.repository.JdbcArticleRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import assyatier.dev.learnspringboot.models.Article;
 
@@ -20,10 +21,10 @@ public class ArticleService {
             return articleRepository.findAllByTitleAndDeletedAtIsNull(title);
         }
 
-        return articleRepository.findAllByDeletedAtIsNull();
+        return articleRepository.findAllByDeletedAtIsNullOrderByUpdatedAtDesc();
     }
 
-    public Optional<Article> getArticleById(Integer id) {
+    public Optional<Article> getArticleById(Long id) {
         return articleRepository.findByIdAndDeletedAtIsNull(id);
     }
 
@@ -34,20 +35,17 @@ public class ArticleService {
                 article.getSlug(),
                 article.getHtmlContent(),
                 article.getAuthor(),
-                null,
-                null,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
                 null);
 
         articleRepository.save(newArticle);
         return newArticle;
     }
 
-    public Optional<Article> updateArticle(Article article, Integer id) throws Exception {
-        Article existingArticle = articleRepository.findByIdAndDeletedAtIsNull(id).get();
-
-        if (existingArticle == null) {
-            throw new Exception("Article not found");
-        }
+    public Optional<Article> updateArticle(Article article, Long id) throws Exception {
+        Article existingArticle = articleRepository.findByIdAndDeletedAtIsNull(id).
+                orElseThrow(() -> new Exception("Article not found"));
 
         existingArticle.setTitle(article.getTitle());
         existingArticle.setSlug(article.getSlug());
@@ -59,8 +57,11 @@ public class ArticleService {
         return Optional.of(existingArticle);
     }
 
-    public boolean deleteArticle(Integer id) {
-        Article existingArticle = articleRepository.findByIdAndDeletedAtIsNull(id).get();
+    public boolean deleteArticle(Long id) {
+        Article existingArticle = articleRepository.findByIdAndDeletedAtIsNull(id).
+                orElseThrow(() -> new RuntimeException("Article not found"));
+
+        existingArticle.setDeletedAt(LocalDateTime.now());
         articleRepository.delete(existingArticle);
         return true;
     }

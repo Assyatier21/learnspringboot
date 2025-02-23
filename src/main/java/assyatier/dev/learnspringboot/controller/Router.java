@@ -29,7 +29,7 @@ class ArticleController {
 
     // Get article by ID
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Article>> getArticleById(@PathVariable Integer id) {
+    public ResponseEntity<ApiResponse<Article>> getArticleById(@PathVariable Long id) {
         Optional<Article> article = articleService.getArticleById(id);
         ApiResponse<Article> response = article.map(a -> new ApiResponse<>(true, "Article found", a))
                 .orElseGet(() -> new ApiResponse<>(false, "Article not found", null));
@@ -46,7 +46,7 @@ class ArticleController {
 
     // Update an existing article
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Article>> updateArticle(@PathVariable Integer id, @Valid @RequestBody Article article) throws Exception {
+    public ResponseEntity<ApiResponse<Article>> updateArticle(@PathVariable Long id, @Valid @RequestBody Article article) throws Exception {
         Optional<Article> updatedArticle = articleService.updateArticle(article, id);
         ApiResponse<Article> response = updatedArticle.map(a -> new ApiResponse<>(true, "Article updated successfully", a))
                 .orElseGet(() -> new ApiResponse<>(false, "Article not found", null));
@@ -55,7 +55,7 @@ class ArticleController {
 
     // Delete an article
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteArticle(@PathVariable Integer id) {
+    public ResponseEntity<ApiResponse<Void>> deleteArticle(@PathVariable Long id) {
         boolean isDeleted = articleService.deleteArticle(id);
         ApiResponse<Void> response = isDeleted ? new ApiResponse<>(true, "Article deleted successfully", null)
                 : new ApiResponse<>(false, "Article not found", null);

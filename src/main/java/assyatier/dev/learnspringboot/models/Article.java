@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "articles")
 @AllArgsConstructor
+@NoArgsConstructor
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,5 +36,5 @@ public class Article {
     private LocalDateTime updatedAt;
 
     @JsonIgnore
-    private String deletedAt;
+    private LocalDateTime deletedAt;
 }
