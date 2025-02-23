@@ -21,8 +21,10 @@ public class Article {
     private Long id;
     private String title;
     private String slug;
+
     @JsonProperty("html_content")
     private String htmlContent;
+
     private String author;
 
     @JsonProperty("created_at")

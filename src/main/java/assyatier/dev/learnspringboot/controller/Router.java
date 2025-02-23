@@ -20,8 +20,7 @@ class ArticleController {
 
     // Get all articles
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Article>>> getAllArticles(
-            @RequestParam(required = false) String title){
+    public ResponseEntity<ApiResponse<List<Article>>> getAllArticles(@RequestParam(required = false) String title){
         List<Article> articleList = articleService.getAllArticles(title);
         ApiResponse<List<Article>> response = new ApiResponse<>(true, "Successfully fetched list of articles", articleList);
         return ResponseEntity.ok(response);  // 200 OK
